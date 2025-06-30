@@ -1,103 +1,120 @@
+"use client";
+import * as React from "react";
+import { callAPI } from "@/config/axios";
 import Image from "next/image";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+const Home: React.FunctionComponent = () => {
+  const [postsList, setPostsList] = React.useState<any[]>([]);
+  const [category, setCategory] = React.useState<string[]>([
+    "All",
+    "Teknologi",
+    "Strategi",
+    "Penulisan",
+    "CMS",
+    "SEO",
+    "Motivasi",
+    "UI/UX",
+    "Frontend",
+    "Tutorial",
+  ]);
+  const [filterCategory, setFilterCategory] = React.useState<string>("All");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+  const getArticlesList = async () => {
+    try {
+      const query = encodeURIComponent(`category='${filterCategory}'`);
+      const { data } = await callAPI.get("/articles");
+      setPostsList(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    getArticlesList();
+  }, [filterCategory]);
+
+  const printPostsList = () => {
+    return postsList.map((val: any, idx: number) => {
+      return (
+        <div
+          key={val.objectId}
+          className="h-72 items-center bg-white rounded-xl cursor-pointer"
+        >
+          <div className="relative h-36 w-full">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src={
+                val.thumbnail &&
+                `https://picsum.photos/id/${Math.floor(
+                  Math.random() * 30
+                )}/200/300`
+              }
+              alt={val.title}
+              layout="fill"
+              objectFit="cover"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+          <div className="w-full p-4 rounded-lg">
+            <div className="flex items-center justify-between">
+              {/* <h6 className="px-4 uppercase font-semibold text-sm text-gray-500">
+                {val.accountData.username}
+              </h6> */}
+              <span className="border border-slate-500 rounded-full py-0.5 px-2 text-xs">
+                {val.category}
+              </span>
+            </div>
+            <p className="font-bold md:text-sm lg:text-lg px-4 py-2">
+              {val.title.slice(0, 55)}
+            </p>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+      );
+    });
+  };
+
+  return (
+    <main>
+      <section id="hero">
+        <div className="relative h-[30rem] w-full">
           <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            src={`https://picsum.photos/id/${Math.floor(
+              Math.random() * 30
+            )}/600/300`}
+            alt={"test"}
+            layout="fill"
+            objectFit="cover"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <div className="absolute bottom-0 right-0 w-full p-4 text-right bg-slate-200 bg-opacity-55">
+            <p className="text-2xl md:text-4xl lg:text-5xl italic">
+              {postsList[0]?.title}
+            </p>
+          </div>
+        </div>
+      </section>
+      <section id="article-list" className="space-y-8 mt-8 px-20">
+        <div id="article-filter" className="w-full overflow-x-auto py-8">
+          {/* filter */}
+          <ul className="flex gap-4">
+            {category.map((val: string) => (
+              <li key={val}>
+                <span
+                  className={`border ${
+                    filterCategory === val &&
+                    "bg-slate-500 text-white font-semibold"
+                  } border-slate-500 rounded-full py-1 px-4 cursor-pointer`}
+                  onClick={() => setFilterCategory(val)}
+                >
+                  {val}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="w-full h-screen md:grid md:grid-cols-3 xl:grid-cols-5 grid-rows-3 items-center gap-3 space-y-5 md:space-y-0">
+          {printPostsList()}
+        </div>
+      </section>
+    </main>
   );
-}
+};
+
+export default Home;
