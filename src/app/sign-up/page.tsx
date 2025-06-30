@@ -19,25 +19,18 @@ const SignUpPage: React.FunctionComponent = () => {
   const passwordRef = React.useRef<HTMLInputElement>(null);
   const confPasswordRef = React.useRef<HTMLInputElement>(null);
 
-  const onSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const firstname = firstnameRef.current?.value || "";
-    const lastname = lastnameRef.current?.value || "";
-    const username = usernameRef.current?.value || "";
-    const email = emailRef.current?.value || "";
-    const password = passwordRef.current?.value || "";
-    const confPassword = confPasswordRef.current?.value || "";
-
-    if (password !== confPassword) {
-      alert("Password dan konfirmasi password tidak cocok");
-      return;
-    }
-
+  const onSignUp = async () => {
     try {
+      const username = usernameRef.current?.value || "";
+      const email = emailRef.current?.value || "";
+      const password = passwordRef.current?.value || "";
+      const confPassword = confPasswordRef.current?.value || "";
+
+      if (password !== confPassword) {
+        alert("Password dan konfirmasi password tidak cocok");
+        return;
+      }
       await callAPI.post("/accounts", {
-        firstname,
-        lastname,
         username,
         email,
         password,
@@ -78,7 +71,7 @@ const SignUpPage: React.FunctionComponent = () => {
               <h1 className="text-2xl">Sign up now</h1>
             </CardHeader>
             <CardContent>
-              <form onSubmit={onSignUp}>
+              <form>
                 <div className="py-2 md:py-6 space-y-5">
                   <div className="flex flex-col md:flex-row gap-5 md:gap-8">
                     <FormInput
@@ -126,8 +119,9 @@ const SignUpPage: React.FunctionComponent = () => {
                       Already have an account ?
                     </p>
                     <Button
-                      type="submit"
+                      type="button"
                       className="bg-gray-400 text-white px-2 md:px-4 py-1 md:py-2 text-sm md:text-base shadow"
+                      onClick={onSignUp}
                     >
                       Sign Up
                     </Button>

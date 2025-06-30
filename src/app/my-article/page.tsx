@@ -72,28 +72,13 @@ const PostPage: React.FunctionComponent = () => {
 
   const onCreateArticle = async () => {
     try {
-      if (articleTitleRef.current && articleFormRef.current) {
+      if (articleTitleRef.current) {
         const response = await callAPI.post("/articles", {
           title: articleTitleRef.current.value,
           category: articleCategoryRef.current,
           thumbnail: articleThumbnailRef.current?.value,
           content: articleFormRef.current.getContent(),
         });
-        const accountId = localStorage.getItem("tkn");
-        const articleId = response.data.objectId;
-        const resAccountToArticle = await callAPI.put(
-          `/accounts/${accountId}/articleList`,
-          {
-            objectIds: articleId,
-          }
-        );
-        // kolom relasi table todos ke account
-        const resTodoToAccount = await callAPI.put(
-          `/articles/${articleId}/accountData`,
-          {
-            objectIds: accountId,
-          }
-        );
         alert("Tambah data article berhasil");
         getArticlesList();
       } else {

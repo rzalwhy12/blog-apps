@@ -3,40 +3,15 @@ import FormInput from "@/components/core/FormInput";
 import * as React from "react";
 import AccountImage from "../../../public/access_account.svg";
 import Image from "next/image";
-import { callAPI } from "../../config/axios";
-import { useAppDispatch } from "@/lib/redux/hooks";
-import { setSignIn } from "@/lib/redux/features/userSlice";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 const SignInPage: React.FunctionComponent = () => {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-
   // Refs for form inputs
   const emailRef = React.useRef<HTMLInputElement>(null);
   const passwordRef = React.useRef<HTMLInputElement>(null);
 
-  const onSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const email = emailRef.current?.value || "";
-    const password = passwordRef.current?.value || "";
-
+  const onSignIn = async () => {
     try {
-      const query = encodeURIComponent(
-        `email='${email}' AND password='${password}'`
-      );
-      const response = await callAPI.get(`/accounts?where=${query}`);
-      console.log("CHECK SIGNIN RESPONSE : ", response.data);
-
-      if (response.data.length === 1) {
-        dispatch(setSignIn({ ...response.data[0], isAuth: true }));
-        localStorage.setItem("tkn", response.data[0].objectId);
-        router.replace("/timeline");
-      } else {
-        alert("Invalid credentials");
-      }
     } catch (error) {
       console.error(error);
       alert("Something went wrong");
@@ -51,7 +26,7 @@ const SignInPage: React.FunctionComponent = () => {
           className="w-full md:w-1/2 h-fit order-2 md:order-1 rounded-2xl px-5 md:px-10 py-4 md:py-8 bg-white"
         >
           <h1 className="text-2xl">Sign in</h1>
-          <form onSubmit={onSignIn}>
+          <form>
             <div className="py-6 space-y-5">
               <FormInput
                 name="email"
@@ -67,7 +42,7 @@ const SignInPage: React.FunctionComponent = () => {
               />
               <div className="flex items-center justify-end gap-4">
                 <Button
-                  type="submit"
+                  type="button"
                   className="bg-slate-700 text-white px-4 py-2 shadow"
                 >
                   Sign In
