@@ -12,45 +12,52 @@ const Home: React.FunctionComponent = () => {
   ]);
   const [filterCategory, setFilterCategory] = React.useState<string>("All");
 
-    const getArticlesList = async () => {
+  const [displayArticleList, setDisplayArticleList] = React.useState<any[]>([]);
+
+  const getArticlesList = async () => {
     try {
       const url = "/articles?pageSize=100&sortBy=%60created%60%20desc";
       const { data } = await apiCall.get(url);
-      setArticleList(data); 
+      setArticleList(data);
 
+      setDisplayArticleList(data);
     } catch (error) {
       console.log("Error fetching all articles:", error);
     }
   };
 
-React.useEffect(() => {
+  React.useEffect(() => {
     getArticlesList();
   }, []);
 
-  const filteredArticleList = React.useMemo(() => {
-    return filterCategory === 'All'
-      ? articleList 
-      : articleList.filter(item => item.category === filterCategory);
-  }, [articleList, filterCategory]); 
+  const handleFilterArticles = (categoryName: string) => {
+    setFilterCategory(categoryName); 
 
-
+    if (categoryName === 'All') {
+      setDisplayArticleList(articleList); 
+    } else {
+    
+      const filtered = articleList.filter(item => item.category === categoryName);
+      setDisplayArticleList(filtered);
+    }
+  };
 
   const printArticleList = () => {
-    if (filteredArticleList.length === 0 && filterCategory !== "All") {
+    if (displayArticleList.length === 0 && filterCategory !== "All") {
         return (
             <div className="col-span-full text-center text-gray-500 text-lg py-10">
                 No articles found for category "{filterCategory}".
             </div>
         );
     }
-    if (filteredArticleList.length === 0 && filterCategory === "All") {
+    if (displayArticleList.length === 0 && filterCategory === "All") {
         return (
             <div className="col-span-full text-center text-gray-500 text-lg py-10">
                 No articles available.
             </div>
         );
     }
-    return filteredArticleList.map((val: any) => {
+    return displayArticleList.map((val: any) => {
       const imageUrl = val.thumbnail &&
                        `https://picsum.photos/id/${Math.floor(Math.random() * 30)}/200/300`;
 
@@ -127,7 +134,7 @@ React.useEffect(() => {
                       ? "bg-slate-700 text-white font-semibold" // Darker background for active
                       : "border-slate-500 text-slate-700 hover:bg-slate-100" // Normal state and hover
                   } rounded-full py-1 px-4 cursor-pointer whitespace-nowrap transition-colors duration-200`}
-                  onClick={() => setFilterCategory(val)}
+                  onClick={() => handleFilterArticles(val)} // Call the new function here
                 >
                   {val}
                 </span>
