@@ -3,9 +3,30 @@ import * as React from "react";
 import Link from "next/link";
 import { FaSearch } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { apiCall } from "@/helper/apiCall";
+import { setSignIn, setSignOut } from "@/lib/redux/features/userSlice";
+import { Button } from "@/components/ui/button";
 
 const Navbar: React.FunctionComponent = () => {
-  const router = useRouter();
+  const userMail = useAppSelector((state) => state.userReducer.email);
+  const dispatch = useAppDispatch();
+
+  const keepLogin = async () => {
+    try {
+      const tkn = localStorage.getItem("tkn");
+      if (tkn) {
+        const res = await apiCall.get(`/accounts/${tkn}`);
+        dispatch(setSignIn(res.data));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    keepLogin();
+  }, []);
 
   return (
     <div className="flex items-center justify-between px-6 lg:px-24 py-5">
@@ -25,22 +46,37 @@ const Navbar: React.FunctionComponent = () => {
             />
           </div>
         </li>
-
         <li className="flex items-center gap-2">
-          <>
-            <Link
-              href="/sign-up"
-              className="bg-slate-200 text-slate-700 px-3 py-1 rounded-md shadow"
-            >
-              Sign Up
-            </Link>
-            <Link
-              href="/sign-in"
-              className="bg-slate-700 text-white px-3 py-1 rounded-md shadow"
-            >
-              Sign In
-            </Link>
-          </>
+          {userMail ? (
+            <div className="flex items-center gap-2">
+              <p>{userMail}</p>
+              <Link href="/my-article">My Article</Link>
+              <Button
+                type="button"
+                onClick={() => {
+                  dispatch(setSignOut());
+                  localStorage.removeItem("tkn");
+                }}
+              >
+                Sign Out
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Link
+                href="/sign-up"
+                className="bg-slate-200 text-slate-700 px-3 py-1 rounded-md shadow"
+              >
+                Sign Up
+              </Link>
+              <Link
+                href="/sign-in"
+                className="bg-slate-700 text-white px-3 py-1 rounded-md shadow"
+              >
+                Sign In
+              </Link>
+            </>
+          )}
         </li>
       </ul>
     </div>
