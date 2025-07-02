@@ -3,10 +3,14 @@ import * as React from "react";
 import Image from "next/image";
 import { apiCall } from "@/helper/apiCall";
 import { dataCategory } from "@/helper/dataCategory";
+import { useRouter } from "next/navigation";
+
 
 const Home: React.FunctionComponent = () => {
+
+  const router = useRouter();
   const [articleList, setArticleList] = React.useState<any[]>([]);
-  const [category, setCategory] = React.useState<string[]>([
+  const [category] = React.useState<string[]>([
     "All",
     ...dataCategory,
   ]);
@@ -26,17 +30,19 @@ const Home: React.FunctionComponent = () => {
     }
   };
 
+  
+
   React.useEffect(() => {
     getArticlesList();
   }, []);
 
   const handleFilterArticles = (categoryName: string) => {
-    setFilterCategory(categoryName); 
+    setFilterCategory(categoryName);
 
     if (categoryName === 'All') {
-      setDisplayArticleList(articleList); 
+      setDisplayArticleList(articleList);
     } else {
-    
+
       const filtered = articleList.filter(item => item.category === categoryName);
       setDisplayArticleList(filtered);
     }
@@ -44,27 +50,28 @@ const Home: React.FunctionComponent = () => {
 
   const printArticleList = () => {
     if (displayArticleList.length === 0 && filterCategory !== "All") {
-        return (
-            <div className="col-span-full text-center text-gray-500 text-lg py-10">
-                No articles found for category "{filterCategory}".
-            </div>
-        );
+      return (
+        <div className="col-span-full text-center text-gray-500 text-lg py-10" >
+          No articles found for category "{filterCategory}".
+        </div>
+      );
     }
     if (displayArticleList.length === 0 && filterCategory === "All") {
-        return (
-            <div className="col-span-full text-center text-gray-500 text-lg py-10">
-                No articles available.
-            </div>
-        );
+      return (
+        <div className="col-span-full text-center text-gray-500 text-lg py-10">
+          No articles available.
+        </div>
+      );
     }
     return displayArticleList.map((val: any) => {
       const imageUrl = val.thumbnail &&
-                       `https://picsum.photos/id/${Math.floor(Math.random() * 30)}/200/300`;
+        `https://picsum.photos/id/${Math.floor(Math.random() * 30)}/200/300`;
 
       return (
         <div
           key={val.objectId}
-          className="h-72 flex flex-col items-center bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+          className="h-72 flex flex-col items-center bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer "
+          onClick={() => router.push(`/article/${val.title}`)}
         >
           <div className="relative h-36 w-full">
             {imageUrl && (
@@ -94,7 +101,7 @@ const Home: React.FunctionComponent = () => {
                 : val.title}
             </p>
             <p className="text-xs text-gray-600 mt-1">
-                {val.created ? new Date(val.created).toLocaleDateString() : 'No Date'}
+              {val.created ? new Date(val.created).toLocaleDateString() : 'No Date'}
             </p>
           </div>
         </div>
@@ -129,11 +136,10 @@ const Home: React.FunctionComponent = () => {
             {category.map((val: string) => (
               <li key={val}>
                 <span
-                  className={`border ${
-                    filterCategory === val
+                  className={`border ${filterCategory === val
                       ? "bg-slate-700 text-white font-semibold" // Darker background for active
                       : "border-slate-500 text-slate-700 hover:bg-slate-100" // Normal state and hover
-                  } rounded-full py-1 px-4 cursor-pointer whitespace-nowrap transition-colors duration-200`}
+                    } rounded-full py-1 px-4 cursor-pointer whitespace-nowrap transition-colors duration-200`}
                   onClick={() => handleFilterArticles(val)} // Call the new function here
                 >
                   {val}
@@ -142,7 +148,7 @@ const Home: React.FunctionComponent = () => {
             ))}
           </ul>
         </div>
-        <div className="w-full min-h-screen grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 pb-20">
+        <div className="w-full min-h-screen grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {printArticleList()}
         </div>
       </section>
