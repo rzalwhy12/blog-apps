@@ -71,7 +71,7 @@ const ArticleDetailPage = async ({params}:IArticleDetailPageProps) => {
                         <p className="font-semibold">AUTHOR</p>
                         <p>Risal Ganteng</p>
                     </div>
-                    <div>git 
+                    <div>
                         <p className="font-semibold">READ</p>
                         <p>{article.readTime || "N/A"}</p>
                     </div>
