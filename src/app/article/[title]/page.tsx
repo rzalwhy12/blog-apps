@@ -2,7 +2,7 @@ import { apiCall } from "@/helper/apiCall";
 import * as React from "react";
 
 interface IArticleDetailPageProps {
-    params: { title: string };
+    params:Promise <{ title: string }>;
 }
 
 interface ArticleDetail {
@@ -22,10 +22,9 @@ const getDetail = async (title: string): Promise<ArticleDetail | undefined> => {
     }
 };
 
-const ArticleDetailPage: React.FunctionComponent<IArticleDetailPageProps> = async (
-    props
-) => {
-    const detailData = await getDetail(props.params.title);
+const ArticleDetailPage = async ({params}:IArticleDetailPageProps) => {
+    const { title } = await params;
+    const detailData = await getDetail(title);
 
     if (!detailData) {
         return (
@@ -72,7 +71,7 @@ const ArticleDetailPage: React.FunctionComponent<IArticleDetailPageProps> = asyn
                         <p className="font-semibold">AUTHOR</p>
                         <p>Risal Ganteng</p>
                     </div>
-                    <div>
+                    <div>git 
                         <p className="font-semibold">READ</p>
                         <p>{article.readTime || "N/A"}</p>
                     </div>

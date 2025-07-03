@@ -2,7 +2,6 @@
 import * as React from "react";
 import Link from "next/link";
 import { FaSearch } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { apiCall } from "@/helper/apiCall";
 import { setSignIn, setSignOut } from "@/lib/redux/features/userSlice";
@@ -26,7 +25,7 @@ const Navbar: React.FunctionComponent = () => {
 
   React.useEffect(() => {
     keepLogin();
-  }, []);
+  });
 
   return (
     <div className="flex items-center justify-between px-6 lg:px-24 py-5">

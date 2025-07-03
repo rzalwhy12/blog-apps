@@ -52,7 +52,7 @@ const Home: React.FunctionComponent = () => {
     if (displayArticleList.length === 0 && filterCategory !== "All") {
       return (
         <div className="col-span-full text-center text-gray-500 text-lg py-10" >
-          No articles found for category "{filterCategory}".
+          No articles found for category &quot;{filterCategory}&quot;.
         </div>
       );
     }

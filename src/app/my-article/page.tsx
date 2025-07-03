@@ -45,7 +45,7 @@ const PostPage: React.FunctionComponent = () => {
     } else {
       router.replace("/sign-in");
     }
-  }, []);
+  });
 
   const onDelete = async (objectId: string) => {
     try {

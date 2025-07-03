@@ -73,7 +73,7 @@ const UpdateArticleDialog: React.FunctionComponent<
             <DialogHeader>
                 <DialogTitle>Edit Article</DialogTitle>
                 <DialogDescription>
-                    Make changes to your article here. Click save when you're done.
+                    Make changes to your article here. Click save when you&apos;re done.
                 </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
